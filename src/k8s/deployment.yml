@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: clojure-rest-example
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: clojure-rest-example
+    spec:
+      containers:
+        - name: clojure-rest-example
+          image: clojure-rest-example:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
