@@ -1,10 +1,12 @@
 (ns clojure-rest-example.handler
   (:use compojure.core)
-  (:require [compojure.handler :as handler])
-  (:require [ring.middleware.json :as middleware])
-  (:require [schema.core :as s])
-  (:require [clojure-rest-example.operation :refer [create-user]])
-  (:require [taoensso.timbre :refer [info]]))
+  (:require [compojure.handler :as handler]
+            [compojure.route :as route]
+            [ring.middleware.json :as middleware]
+            [schema.core :as s]
+            [clojure-rest-example.operation :as op]
+            [taoensso.timbre :refer  [info]])
+  (:require monger.json))
 
 (defn basic-logging-middleware [handler]
   (fn [request]
@@ -14,7 +16,10 @@
       response)))
 
 (defroutes app-routes
-           (POST "/user" request (create-user request)))
+  (context "/user" []
+    (POST "/" request (op/create-user request))
+    (GET "/:email" [email]  (op/get-user email)))
+  (route/not-found "Page not found"))
 
 (def routes-with-middleware
   (-> app-routes

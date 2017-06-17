@@ -1,12 +1,13 @@
 (ns clojure-rest-example.schema
   (:require [schema.core :as s])
-  (:require [clojure.set :refer [map-invert]]))
+  (:require [clojure.set :refer [map-invert]])
+  (:import org.bson.types.ObjectId))
 
-(def user {
-           (s/optional-key :id) s/Uuid
-           :name                s/Str
-           :email               s/Str
-           })
+(def non-empty-string (s/pred #(and (instance? java.lang.String %) (not (empty? %)))))
+
+(def user {(s/optional-key :_id) org.bson.types.ObjectId
+           :name                non-empty-string
+           :email               non-empty-string})
 
 (defn convert-to-error [m]
   {:error (->> m
@@ -17,19 +18,24 @@
                                    (assoc m (clojure.string/replace k "-" "_") [v])) {} m)))
                (apply (partial merge-with into {})))})
 
-(defn model->response
-  ([model]
-   (if-not (:error model)
-     {:status 200
-      :body   model}
-     {:status 400
-      :body   model})))
+(defn create-response
+  ([status]
+   {:status status})
+  ([status body]
+   {:status status
+    :body body}))
+
+(defn model->response [model]
+  (cond
+    (or (nil? model) (empty? model)) (create-response 400)
+    (:error model)  (create-response 400 model)
+    :else (create-response 200 model)))
 
 (defn verify-model [schema]
   (fn [request] (->> (:body request)
                      ((fn [request-body] (if-let [err (s/check schema request-body)]
-                                           (convert-to-error err)
+                                           (->  err
+                                                convert-to-error)
                                            request-body))))))
 
 (def validate-user (verify-model user))
-

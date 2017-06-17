@@ -11,12 +11,9 @@
                  [com.taoensso/timbre "4.10.0"]
                  [metosin/ring-http-response "0.9.0"]
                  [prismatic/schema "1.1.6"]
-                 [couchbase-clj "0.2.0"]]
-  :plugins [[lein-ring "0.12.0"]
-            [cider/cider-nrepl "0.14.0"]
-            [lein-ring "0.9.1"]]
-  :ring {:handler clojure-rest-example.handler/app}
-
-  :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                                  [ring-mock "0.1.5"]
-                                  [cljfmt "0.5.1"]]}})
+                 [com.novemberain/monger "3.1.0"]
+                 [environ "1.1.0"]
+                 [cheshire "5.1.1"]
+                 ]
+  :plugins [[lein-ring "0.12.0"]]
+  :ring {:handler clojure-rest-example.handler/app})
