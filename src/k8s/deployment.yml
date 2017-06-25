@@ -13,5 +13,12 @@ spec:
         - name: clojure-rest-example
           image: clojure-rest-example:latest
           imagePullPolicy: Never
+          env:
+            - name: DATABASE_URL
+              value: "example-mongodb"
+            - name: DATABASE_PORT
+              value: "27017"
+            - name: DATABASE_NAME
+              value: "test-db"
           ports:
             - containerPort: 3000

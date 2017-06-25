@@ -17,7 +17,9 @@
 
 (defroutes app-routes
   (context "/user" []
+    (GET "/" request (op/get-users))
     (POST "/" request (op/create-user request))
+    (DELETE "/:email" [email] (op/delete-user email))
     (GET "/:email" [email]  (op/get-user email)))
   (route/not-found "Page not found"))
 

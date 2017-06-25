@@ -17,3 +17,11 @@
 (defn get-user [email]
   (-> (db/fetch user-collection (wrap-id-in-map :email email))
       model->response))
+
+(defn get-users []
+  (-> (db/fetch user-collection)
+      model->response))
+
+(defn delete-user [email]
+  (-> (db/delete user-collection (wrap-id-in-map :email email))
+      model->response))
